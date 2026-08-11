@@ -1,23 +1,26 @@
 const express = require('express');
 const prisma = require('../config/db');
+const authenticateToken = require('../middleware/auth.js');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try {
-        const tasks = await prisma.task.findMany();
-        res.json( { tasks: tasks, message: "Get all tasks" });
+        const tasks = await prisma.task.findMany({ // tasks belonging to a specific user
+            where: { userId: req.user.userId },
+        });
+        res.json( { tasks: tasks, message: "Get all tasks of a certain user" });
     } catch (e) {
         res.status(500).json("Internal server error");
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
     const { userId, title, description, dueDate } = req.body;
     try {
         const newTask = await prisma.task.create({
             data: {
-                userId: userId, // this is temporary (implement user authentication)
+                userId: req.user.userId, // this is temporary (implement user authentication)
                 title: title,
                 description: description ?? undefined,
                 dueDate: dueDate ?? undefined,
@@ -30,13 +33,14 @@ router.post('/', async (req, res) => {
     }
 });
 
-// when user wants to complete a task
-router.patch('/:id', async (req, res) => {
+// when user wants to update a task
+router.patch('/:id', authenticateToken, async (req, res) => {
     try {
-        const id = Number(req.params.id);
+        const taskId = Number(req.params.id);
+        const userId = req.user.userId;
         const { title, description, status, dueDate } = req.body;
-        await prisma.task.update({
-            where: { id },
+        await prisma.task.updateMany({ // updateMany used because id + userId is not explicitly stated to be a unique combination
+            where: { taskId, userId },
             data: {
                 title: title,
                 description: description ?? undefined,
@@ -50,11 +54,12 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
     try {
-        const id = Number(req.params.id); // wrap with Number (route parameters are given as strings)
-        await prisma.task.delete({
-            where: { id },
+        const taskId = Number(req.params.id); // wrap with Number (route parameters are given as strings)
+        const userId = req.user.userId;
+        await prisma.task.deleteMany({
+            where: { taskId, userId },
         });
         res.json("Task deleted");
     } catch (e) {
