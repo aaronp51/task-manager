@@ -2,6 +2,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const prisma = require('../config/db');
+const authenticateToken = require('../middleware/auth.js');
+const validateEmailAndPassword = require('../middleware/validation.js');
 
 const saltRounds = 10;
 const router = express.Router();
@@ -9,7 +11,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const users = await prisma.user.findMany();
-        res.json( { users: users, message: "Get all users"});
+        res.json( { users: users, message: "Get all users" });
     } catch (e) {
         console.log("internal server error");
         res.status(500).json("internal server error");
@@ -17,15 +19,15 @@ router.get('/', async (req, res) => {
 });
 
 // login route: request -> get data -> compare email and password -> verify credentials -> create token -> send token
-router.post('/login', async (req, res) => {
+router.post('/login', validateEmailAndPassword, async (req, res) => {
     try {
         const { email, password } = req.body;
         const existingUser = await prisma.user.findUnique({
             where: { email },
         });
-        const correctPassword = await brcypt.compare(password, passwordHash);
+        const correctPassword = await bcrypt.compare(password, existingUser.passwordHash);
         if(!correctPassword) {
-            res.status(401).json("Invliad email or password");
+            res.status(401).json("Invalid email or password");
         }
         const token = jwt.sign(
             { userId: existingUser.id },
@@ -40,7 +42,7 @@ router.post('/login', async (req, res) => {
 });
 
 // POST route: request -> get data -> hash password -> create record -> send response
-router.post('/register', async (req, res) => {
+router.post('/register', validateEmailAndPassword, async (req, res) => {
     const { email, password } = req.body;
     try {
         const passwordHash = await bcrypt.hash(password, saltRounds);
