@@ -10,8 +10,8 @@ router.get('/', authenticateToken, async (req, res) => {
             where: { userId: req.user.userId }, // 'user' was attached by the authenticateToken function to 'req'
         });
         res.json( { tasks: tasks, message: "Get all tasks of a certain user" });
-    } catch (e) {
-        res.status(500).json("Internal server error");
+    } catch (err) {
+        next(err);
     }
 });
 
@@ -26,8 +26,8 @@ router.get('/:id', authenticateToken, async (req, res) => {
             return res.status(404).json("Task not found");
         }
         res.json( { task: task, message: "Get a specific task of a certain user" });
-    } catch (e) {
-        res.status(500).json("Internal server error");
+    } catch (err) {
+        next(err);
     }
 });
 
@@ -43,9 +43,8 @@ router.post('/', authenticateToken, async (req, res) => {
             },
         });
         res.json( { task: newTask, message: "Task created" });
-    } catch (e) {
-        console.log("Internal server error");
-        res.status(500).json("Internal server error");
+    } catch (err) {
+        next(err);
     }
 });
 
@@ -65,8 +64,8 @@ router.patch('/:id', authenticateToken, async (req, res) => {
                 updatedAt: new Date(),
             }
         })
-    } catch (e) {
-        res.status(404).json("Task not found");
+    } catch (err) {
+        next(err);
     }
 });
 
@@ -78,8 +77,8 @@ router.delete('/:id', authenticateToken, async (req, res) => {
             where: { taskId, userId },
         });
         res.json("Task deleted");
-    } catch (e) {
-        res.status(404).json("Task not found");
+    } catch (err) {
+        next(err);
     }
 });
 

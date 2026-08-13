@@ -13,8 +13,7 @@ router.get('/', async (req, res) => {
         const users = await prisma.user.findMany();
         res.json( { users: users, message: "Get all users" });
     } catch (e) {
-        console.log("internal server error");
-        res.status(500).json("internal server error");
+        next(err);
     }
 });
 
@@ -36,8 +35,7 @@ router.post('/login', validateEmailAndPassword, async (req, res) => {
         );
         res.json({ token });
     } catch (e) {
-        console.log("Internal server error");
-        res.status(500).json("Internal server error");
+        next(err);
     }
 });
 
@@ -60,7 +58,7 @@ router.post('/register', validateEmailAndPassword, async (req, res) => {
                 res.status(409).json("Email is already registered");
             }
         }
-        throw e;
+        next(err);
     }
 });
 
