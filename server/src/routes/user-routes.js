@@ -29,7 +29,7 @@ router.post('/login', validateEmailAndPassword, async (req, res) => {
         if(!correctPassword) {
             res.status(401).json("Invalid email or password");
         }
-        const token = jwt.sign(
+        const token = jwt.sign( // used to create a token with HEADER.PAYLOAD.SIGNATURE (decoded later in authenticateToken function)
             { userId: existingUser.id },
             process.env.JWT_SECRET,
             { expiresIn : '5m' }

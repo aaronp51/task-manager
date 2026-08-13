@@ -7,9 +7,25 @@ const router = express.Router();
 router.get('/', authenticateToken, async (req, res) => {
     try {
         const tasks = await prisma.task.findMany({ // tasks belonging to a specific user
-            where: { userId: req.user.userId },
+            where: { userId: req.user.userId }, // 'user' was attached by the authenticateToken function to 'req'
         });
         res.json( { tasks: tasks, message: "Get all tasks of a certain user" });
+    } catch (e) {
+        res.status(500).json("Internal server error");
+    }
+});
+
+router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+        const taskId = Number(req.params.id); // wrap with Number (route parameters are given as strings)
+        const userId = req.user.userId;
+        const task = await prisma.task.findFirst({
+            where: { taskId, userId },
+        });
+        if (!task) {
+            return res.status(404).json("Task not found");
+        }
+        res.json( { task: task, message: "Get a specific task of a certain user" });
     } catch (e) {
         res.status(500).json("Internal server error");
     }

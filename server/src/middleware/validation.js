@@ -1,5 +1,7 @@
+// body holds the data sent in the request body, validationResult is used to check for validation errors
 const { body, validationResult } = require('express-validator');
 
+// function meant to be used for user routes and to validate request body before running the route handler
 function validateEmailAndPassword(req, res, next) {
     const emailValidation = body('email')
         .trim()
