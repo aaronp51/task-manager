@@ -1,5 +1,5 @@
 // body holds the data sent in the request body, validationResult is used to check for validation errors
-const { body, validationResult } = require('express-validator');
+import { body, validationResult } from 'express-validator';
 
 // function meant to be used for user routes and to validate request body before running the route handler
 function validateEmailAndPassword(req, res, next) {
@@ -21,4 +21,4 @@ function validateEmailAndPassword(req, res, next) {
     next();
 }
 
-module.exports = validateEmailAndPassword;
+export default validateEmailAndPassword;

@@ -1,9 +1,10 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const prisma = require('../config/db');
-const authenticateToken = require('../middleware/auth.js');
-const validateEmailAndPassword = require('../middleware/validation.js');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import prisma from '../config/db';
+import authenticateToken from '../middleware/auth.js';
+import validateEmailAndPassword from '../middleware/validation.js';
+import e from 'express';
 
 const saltRounds = 10;
 const router = express.Router();
@@ -62,4 +63,4 @@ router.post('/register', validateEmailAndPassword, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

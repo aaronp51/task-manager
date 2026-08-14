@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 // used to authenticate JWT before giving access to routes
 function authenticateToken(req, res, next) {
@@ -19,4 +19,4 @@ function authenticateToken(req, res, next) {
     }
 }
 
-module.exports = authenticateToken;
+export default authenticateToken;

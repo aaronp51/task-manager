@@ -1,8 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const userRoutes = require('./routes/user-routes.js');
-const taskRoutes = require('./routes/task-routes.js');
-const handleError = require('./middleware/handle-error.js');
+import express from 'express';
+import cors from 'cors';
+import userRoutes from './routes/user-routes.js';
+import taskRoutes from './routes/task-routes.js';
+import handleError from './middleware/handle-error.js';
 const app = express();
 
 const corsOptions = {
