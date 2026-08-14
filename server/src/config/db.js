@@ -1,3 +1,14 @@
+const fs = require('fs');
+const path = require('path');
+
+console.log('__dirname:', __dirname);
+console.log('cwd:', process.cwd());
+
+console.log(
+    'Generated Prisma exists:',
+    fs.existsSync(path.resolve(__dirname, '../../generated/prisma'))
+);
+
 const { PrismaClient, Prisma } = require('../../generated/prisma');
 const { PrismaPg } = require('@prisma/adapter-pg');
 
