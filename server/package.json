@@ -5,12 +5,12 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "prisma generate",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node src/index.ts",
+    "dev": "nodemon src/index.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
@@ -21,10 +21,13 @@
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
     "jsonwebtoken": "^9.0.3",
-    "nodemon": "^3.1.14",
     "pg": "^8.22.0"
   },
   "devDependencies": {
-    "prisma": "^7.9.1"
+    "@types/node": "^26.2.0",
+    "nodemon": "^3.1.14",
+    "prisma": "^7.9.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^7.0.2"
   }
 }
