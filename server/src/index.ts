@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import userRoutes from './routes/user-routes.js';
-import taskRoutes from './routes/task-routes.js';
-import handleError from './middleware/handle-error.js';
+import userRoutes from './routes/user-routes.ts';
+import taskRoutes from './routes/task-routes.ts';
+import handleError from './middleware/handle-error.ts';
 const app = express();
 
 const corsOptions = {
