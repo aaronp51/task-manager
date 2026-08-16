@@ -5,11 +5,11 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "prisma generate",
-    "start": "node src/index.ts",
+    "build": "prisma generate && tsc",
+    "start": "node dist/index.js",
     "dev": "nodemon src/index.ts"
   },
   "dependencies": {
@@ -24,6 +24,10 @@
     "pg": "^8.22.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.2.0",
     "nodemon": "^3.1.14",
     "prisma": "^7.9.1",

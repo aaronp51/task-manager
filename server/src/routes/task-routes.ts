@@ -1,7 +1,7 @@
 import express from 'express';
 import type { NextFunction, Request, Response } from 'express';
-import prisma from '../config/db.ts';
-import authenticateToken, { type AuthenticatedRequest } from '../middleware/auth.ts';
+import prisma from '../config/db.js';
+import authenticateToken, { type AuthenticatedRequest } from '../middleware/auth.js';
 
 const router = express.Router();
 

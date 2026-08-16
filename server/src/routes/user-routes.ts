@@ -2,9 +2,9 @@ import express from 'express';
 import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { Prisma } from '../../generated/prisma/client.ts';
-import prisma from '../config/db.ts';
-import validateEmailAndPassword from '../middleware/validation.ts';
+import prisma from '../config/db.js';
+import { Prisma } from '../generated/prisma/client.js';
+import validateEmailAndPassword from '../middleware/validation.js';
 
 const saltRounds = 10;
 const router = express.Router();
