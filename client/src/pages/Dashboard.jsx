@@ -128,6 +128,7 @@ function Dashboard() {
                 className={`task-checkbox ${
                   task.completed ? 'completed' : ''
                 }`}
+                onClick={() => toggleTaskCompletion(task.id)}
               >
                 {task.completed && <CheckCircle2 size={20} />}
               </button>

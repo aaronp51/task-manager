@@ -273,6 +273,10 @@
   background-color: #f0fdf4;
 }
 
+.priority-badge.low {
+  color: #2563eb;
+  background-color: #eff6ff;
+}
 
 /* =========================
    RESPONSIVE
