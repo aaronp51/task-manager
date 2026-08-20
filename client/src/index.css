@@ -1,0 +1,71 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* =========================
+   ROOT
+========================= */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+body {
+  min-width: 320px;
+
+  font-family: Arial, sans-serif;
+
+  color: #1e293b;
+  background-color: #f8fafc;
+}
+
+
+/* =========================
+   GLOBAL ELEMENTS
+========================= */
+
+button {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+
+/* =========================
+   APP LAYOUT
+========================= */
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.main-content {
+  flex: 1;
+
+  min-width: 0;
+  padding: 40px;
+
+  background-color: #f8fafc;
+}

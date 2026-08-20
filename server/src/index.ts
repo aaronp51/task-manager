@@ -6,7 +6,10 @@ import handleError from './middleware/handle-error.js';
 const app = express();
 
 const corsOptions = {
-  origin: 'https://zesty-optimism-production-b9c6.up.railway.app/'
+  origin: [
+    'http://localhost:5173',
+    'https://zesty-optimism-production-b9c6.up.railway.app'
+  ]
 };
 
 app.use(express.json()); // middleware function to parse requests

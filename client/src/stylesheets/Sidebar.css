@@ -1,0 +1,240 @@
+/* =========================
+   SIDEBAR CONTAINER
+========================= */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+
+  width: 260px;
+  height: 100vh;
+  flex-shrink: 0;
+
+  padding: 24px 16px;
+
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+
+  overflow-y: auto;
+}
+
+
+/* =========================
+   LOGO
+========================= */
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 8px;
+  margin-bottom: 36px;
+
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  color: #ffffff;
+  background-color: #2563eb;
+  border-radius: 10px;
+}
+
+.sidebar-logo h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.sidebar-logo p {
+  margin-top: 2px;
+
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  width: 100%;
+
+  flex-shrink: 0;
+}
+
+.nav-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  width: 100%;
+}
+
+.nav-section-title {
+  padding: 0 12px;
+  margin-bottom: 4px;
+
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+
+  color: #94a3b8;
+}
+
+
+/* =========================
+   NAVIGATION LINKS
+========================= */
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  min-height: 44px;
+
+  padding: 10px 12px;
+
+  color: #64748b;
+  background-color: transparent;
+  border-radius: 8px;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #334155;
+  background-color: #f1f5f9;
+}
+
+.nav-link.active {
+  color: #2563eb;
+  background-color: #eff6ff;
+
+  font-weight: 600;
+}
+
+
+/* =========================
+   BOTTOM SECTION
+========================= */
+
+.sidebar-bottom {
+  width: 100%;
+
+  margin-top: auto;
+  padding-top: 24px;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================
+   NEW TASK BUTTON
+========================= */
+
+.new-task-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 100%;
+  min-height: 44px;
+
+  padding: 10px 12px;
+
+  color: #ffffff;
+  background-color: #2563eb;
+
+  border: none;
+  border-radius: 8px;
+
+  font: inherit;
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+.new-task-button:hover {
+  background-color: #1d4ed8;
+}
+
+
+/* =========================
+   USER SECTION
+========================= */
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  min-height: 64px;
+
+  padding-top: 20px;
+  margin-top: 20px;
+
+  border-top: 1px solid #e2e8f0;
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  color: #64748b;
+  background-color: #e2e8f0;
+
+  border-radius: 50%;
+}
+
+.user-info {
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #334155;
+}
+
+.user-email {
+  overflow: hidden;
+
+  margin-top: 3px;
+
+  font-size: 12px;
+  color: #94a3b8;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

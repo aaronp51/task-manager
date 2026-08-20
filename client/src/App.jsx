@@ -1,13 +1,21 @@
-// ************** THIS IS YOUR APP'S ENTRY POINT. CHANGE THIS FILE AS NEEDED. **************
-// ************** DEFINE YOUR REACT COMPONENTS in ./components directory **************
-import './stylesheets/App.css';
-import TaskManagerApp from './components/task-manager.jsx'
+import { Routes, Route } from 'react-router-dom';
+
+import DashboardLayout from './layouts/DashboardLayout';
+import Dashboard from './pages/Dashboard';
+import Tasks from './pages/Tasks';
+import Completed from './pages/Completed';
+import Settings from './pages/Settings';
 
 function App() {
   return (
-    <section className="task-manager">
-      <TaskManagerApp />
-    </section>
+    <Routes>
+      <Route element={<DashboardLayout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/tasks" element={<Tasks />} />
+        <Route path="/completed" element={<Completed />} />
+        <Route path="/settings" element={<Settings />} />
+      </Route>
+    </Routes>
   );
 }
 
