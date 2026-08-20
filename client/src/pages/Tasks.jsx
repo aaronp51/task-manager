@@ -1,49 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search, Plus, CheckCircle2 } from 'lucide-react';
+
+import { getTasks } from '../api/tasks';
 
 import '../stylesheets/Tasks.css';
 
 function Tasks() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: 'Finish task-manager backend',
-      description: 'Complete the remaining API routes.',
-      priority: 'High',
-      completed: false,
-    },
-    {
-      id: 2,
-      title: 'Study AWS SAA',
-      description: 'Review VPC networking and storage.',
-      priority: 'Medium',
-      completed: false,
-    },
-    {
-      id: 3,
-      title: 'Design dashboard UI',
-      description: 'Finish the dashboard layout and styling.',
-      priority: 'Low',
-      completed: true,
-    },
-    {
-      id: 4,
-      title: 'Set up PostgreSQL',
-      description: 'Configure the database for the application.',
-      priority: 'High',
-      completed: false,
-    },
-    {
-      id: 5,
-      title: 'Deploy backend',
-      description: 'Deploy the Express server to Railway.',
-      priority: 'Medium',
-      completed: true,
-    },
-  ]);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    async function loadTasks() {
+      try {
+        const taskData = await getTasks();
+
+        setTasks(taskData);
+      } catch (error) {
+        console.error('Failed to load tasks:', error);
+
+        setError('Failed to load tasks.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadTasks();
+  }, []);
 
   function toggleTaskCompletion(taskId) {
     setTasks((currentTasks) =>
@@ -70,6 +56,22 @@ function Tasks() {
 
     return matchesSearch;
   });
+
+  if (loading) {
+    return (
+      <div className="tasks-page">
+        <p>Loading tasks...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="tasks-page">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="tasks-page">
