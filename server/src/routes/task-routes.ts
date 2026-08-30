@@ -39,10 +39,12 @@ router.get('/:id', authenticateToken, async (req: AuthenticatedRequest, res: Res
   }
 });
 
+// when user wants to create a new task
 router.post('/', authenticateToken, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const { title, description, dueDate } = req.body as {
+  const { title, description, priority, dueDate } = req.body as {
     title: string;
     description?: string;
+    priority?: string;
     dueDate?: Date | string;
   };
 
@@ -52,6 +54,7 @@ router.post('/', authenticateToken, async (req: AuthenticatedRequest, res: Respo
         userId: req.user?.userId ?? 0,
         title,
         description: description ?? null,
+        priority: priority ?? undefined,
         dueDate: dueDate ? new Date(dueDate) : null,
       },
     });
@@ -67,10 +70,11 @@ router.patch('/:id', authenticateToken, async (req: AuthenticatedRequest, res: R
   try {
     const taskId = Number(req.params.id);
     const userId = req.user?.userId;
-    const { title, description, status, dueDate } = req.body as {
+    const { title, description, priority, completed, dueDate } = req.body as {
       title?: string;
       description?: string;
-      status?: string;
+      priority?: string;
+      completed?: boolean;
       dueDate?: Date | string;
     };
 
@@ -88,7 +92,8 @@ router.patch('/:id', authenticateToken, async (req: AuthenticatedRequest, res: R
       data: {
         title,
         description,
-        status,
+        priority,
+        completed,
         dueDate: (dueDate === null ? null : (dueDate ? new Date(dueDate) : undefined)), // check if dueDate is null explicitly
         updatedAt: new Date(),
       },
