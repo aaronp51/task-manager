@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Search, Plus, CheckCircle2, X } from 'lucide-react';
-import { getTasks, createTask, updateTask } from '../api/tasks';
+import {
+  Search,
+  Plus,
+  CheckCircle2,
+  X,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
+import { getTasks, createTask, updateTask, deleteTask } from '../api/tasks';
 
 import '../stylesheets/Tasks.css';
 
@@ -20,6 +27,19 @@ function Tasks() {
 
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState('');
+
+  const [editingTaskId, setEditingTaskId] = useState(null);
+
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editPriority, setEditPriority] = useState('medium');
+  const [editDueDate, setEditDueDate] = useState('');
+
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [editError, setEditError] = useState('');
+
+  // Delete
+  const [deletingTaskId, setDeletingTaskId] = useState(null);
 
   useEffect(() => {
     async function loadTasks() {
@@ -107,6 +127,110 @@ function Tasks() {
       setCreateError('Failed to create task.');
     } finally {
       setCreating(false);
+    }
+  }
+
+  function startEditingTask(task) {
+    setEditingTaskId(task.id);
+
+    setEditTitle(task.title ?? '');
+    setEditDescription(task.description ?? '');
+    setEditPriority(task.priority ?? 'medium');
+
+    if (task.dueDate) {
+      setEditDueDate(task.dueDate.slice(0, 10));
+    } else {
+      setEditDueDate('');
+    }
+
+    setEditError('');
+  }
+
+  function cancelEditing() {
+    setEditingTaskId(null);
+
+    setEditTitle('');
+    setEditDescription('');
+    setEditPriority('medium');
+    setEditDueDate('');
+    setEditError('');
+  }
+  
+  async function handleEditTask(event) {
+    event.preventDefault();
+
+    setEditError('');
+
+    if (!editTitle.trim()) {
+      setEditError('Title is required.');
+      return;
+    }
+
+    try {
+      setSavingEdit(true);
+
+      await updateTask(editingTaskId, {
+        title: editTitle.trim(),
+        description: editDescription.trim() || null,
+        priority: editPriority,
+        dueDate: editDueDate || null,
+      });
+
+      // Update the existing task locally.
+      // The PATCH endpoint only returns { updatedTask: { count }, message },
+      // so we don't use its response as the task object.
+      setTasks((currentTasks) =>
+        currentTasks.map((task) =>
+          task.id === editingTaskId
+            ? {
+                ...task,
+                title: editTitle.trim(),
+                description: editDescription.trim() || null,
+                priority: editPriority,
+                dueDate: editDueDate || null,
+              }
+            : task
+        )
+      );
+
+      cancelEditing();
+    } catch (error) {
+      console.error('Failed to update task:', error);
+      setEditError('Failed to update task.');
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
+  async function handleDeleteTask(taskId) {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this task?'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingTaskId(taskId);
+
+      await deleteTask(taskId);
+
+      setTasks((currentTasks) =>
+        currentTasks.filter(
+          (task) => task.id !== taskId
+        )
+      );
+
+      if (editingTaskId === taskId) {
+        cancelEditing();
+      }
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+
+      setError('Failed to delete task.');
+    } finally {
+      setDeletingTaskId(null);
     }
   }
 
@@ -289,38 +413,209 @@ function Tasks() {
 
       <section className="tasks-list">
         {filteredTasks.length > 0 ? (
-          filteredTasks.map((task) => (
-            <div className="task-row" key={task.id}>
-              <button
-                className={`task-row-checkbox ${
-                  task.completed ? 'completed' : ''
-                }`}
-                onClick={() => toggleTaskCompletion(task.id)}
-              >
-                {task.completed && <CheckCircle2 size={20} />}
-              </button>
+          filteredTasks.map((task) => {
+            if (editingTaskId === task.id) {
+              return (
+                <form
+                  key={task.id}
+                  className="edit-task-form"
+                  onSubmit={handleEditTask}
+                >
+                  <div className="edit-task-header">
+                    <h2>Edit Task</h2>
 
-              <div className="task-row-details">
-                <h2
-                  className={`task-row-title ${
-                    task.completed ? 'completed' : ''
+                    <button
+                      type="button"
+                      className="close-form-button"
+                      onClick={cancelEditing}
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+
+                  <label>
+                    Title
+
+                    <input
+                      type="text"
+                      value={editTitle}
+                      onChange={(event) =>
+                        setEditTitle(
+                          event.target.value
+                        )
+                      }
+                    />
+                  </label>
+
+                  <label>
+                    Description
+
+                    <textarea
+                      value={editDescription}
+                      onChange={(event) =>
+                        setEditDescription(
+                          event.target.value
+                        )
+                      }
+                      rows="4"
+                    />
+                  </label>
+
+                  <div className="form-row">
+                    <label>
+                      Priority
+
+                      <select
+                        value={editPriority}
+                        onChange={(event) =>
+                          setEditPriority(
+                            event.target.value
+                          )
+                        }
+                      >
+                        <option value="low">
+                          Low
+                        </option>
+                        <option value="medium">
+                          Medium
+                        </option>
+                        <option value="high">
+                          High
+                        </option>
+                      </select>
+                    </label>
+
+                    <label>
+                      Due Date
+
+                      <input
+                        type="date"
+                        value={editDueDate}
+                        onChange={(event) =>
+                          setEditDueDate(
+                            event.target.value
+                          )
+                        }
+                      />
+                    </label>
+                  </div>
+
+                  {editError && (
+                    <p className="create-task-error">
+                      {editError}
+                    </p>
+                  )}
+
+                  <div className="create-task-form-actions">
+                    <button
+                      type="button"
+                      className="cancel-task-button"
+                      onClick={cancelEditing}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="submit-task-button"
+                      disabled={savingEdit}
+                    >
+                      {savingEdit
+                        ? 'Saving...'
+                        : 'Save Changes'}
+                    </button>
+                  </div>
+                </form>
+              );
+            }
+            return (
+              <div
+                className={`task-row ${
+                  task.completed
+                    ? 'task-completed'
+                    : ''
+                }`}
+                key={task.id}
+              >
+                <button
+                  className={`task-row-checkbox ${
+                    task.completed
+                      ? 'completed'
+                      : ''
+                  }`}
+                  onClick={() =>
+                    toggleTaskCompletion(
+                      task.id
+                    )
+                  }
+                  aria-label={
+                    task.completed
+                      ? 'Mark task incomplete'
+                      : 'Mark task complete'
+                  }
+                >
+                  {task.completed && (
+                    <CheckCircle2 size={20} />
+                  )}
+                </button>
+
+                <div className="task-row-details">
+                  <h2
+                    className={`task-row-title ${
+                      task.completed
+                        ? 'completed'
+                        : ''
+                    }`}
+                  >
+                    {task.title ?? 'Untitled Task'}
+                  </h2>
+
+                  <p className="task-row-description">
+                    {task.description ?? ''}
+                  </p>
+                </div>
+
+                <span
+                  className={`task-priority ${
+                    (
+                      task.priority ??
+                      'medium'
+                    ).toLowerCase()
                   }`}
                 >
-                  {task.title}
-                </h2>
+                  {task.priority ?? 'medium'}
+                </span>
 
-                <p className="task-row-description">
-                  {task.description}
-                </p>
+                <div className="task-actions">
+                  <button
+                    className="task-action-button"
+                    onClick={() =>
+                      startEditingTask(task)
+                    }
+                    aria-label="Edit task"
+                  >
+                    <Pencil size={17} />
+                  </button>
+
+                  <button
+                    className="task-action-button delete"
+                    onClick={() =>
+                      handleDeleteTask(
+                        task.id
+                      )
+                    }
+                    disabled={
+                      deletingTaskId ===
+                      task.id
+                    }
+                    aria-label="Delete task"
+                  >
+                    <Trash2 size={17} />
+                  </button>
+                </div>
               </div>
-
-              <span
-                className={`task-priority ${(task.priority ?? 'medium').toLowerCase()}`}
-              >
-                {task.priority}
-              </span>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className="empty-state">
             <p>No tasks found.</p>
