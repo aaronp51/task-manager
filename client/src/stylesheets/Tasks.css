@@ -302,3 +302,97 @@
     margin-left: 40px;
   }
 }
+
+.create-task-form-container {
+  margin-bottom: 24px;
+  padding: 24px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.create-task-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.create-task-form-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.close-form-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.create-task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.create-task-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.create-task-form input,
+.create-task-form textarea,
+.create-task-form select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.create-task-form textarea {
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.create-task-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancel-task-button,
+.submit-task-button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.cancel-task-button {
+  border: 1px solid #d1d5db;
+  background: white;
+}
+
+.submit-task-button {
+  border: none;
+  background: #111827;
+  color: white;
+}
+
+.submit-task-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.create-task-error {
+  margin: 0;
+  color: #dc2626;
+}

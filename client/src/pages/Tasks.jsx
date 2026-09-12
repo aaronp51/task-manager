@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Search, Plus, CheckCircle2 } from 'lucide-react';
-
-import { getTasks } from '../api/tasks';
+import { Search, Plus, CheckCircle2, X } from 'lucide-react';
+import { getTasks, createTask } from '../api/tasks';
 
 import '../stylesheets/Tasks.css';
 
@@ -12,13 +11,22 @@ function Tasks() {
 
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showCreateForm, setShowCreateForm] = useState(false);
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState('medium');
+  const [dueDate, setDueDate] = useState('');
+
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState('');
 
   useEffect(() => {
     async function loadTasks() {
       try {
         const taskData = await getTasks();
 
-        setTasks(taskData);
+        setTasks(taskData.tasks);
       } catch (error) {
         console.error('Failed to load tasks:', error);
 
@@ -41,10 +49,46 @@ function Tasks() {
     );
   }
 
+  async function handleCreateTask(event) {
+    event.preventDefault();
+
+    setCreateError('');
+
+    if (!title.trim()) {
+      setCreateError('Title is required.');
+      return;
+    }
+
+    try {
+      setCreating(true);
+
+      await createTask({
+        title: title.trim(),
+        description: description.trim() || null,
+        priority,
+        dueDate: dueDate || null,
+      });
+
+      const updatedTasks = await getTasks();
+      setTasks(updatedTasks.tasks);
+
+      setTitle('');
+      setDescription('');
+      setPriority('medium');
+      setDueDate('');
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error('Failed to create task:', error);
+      setCreateError('Failed to create task.');
+    } finally {
+      setCreating(false);
+    }
+  }
+
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchTerm.toLowerCase());
+      (task.title ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (task.description ?? '').toLowerCase().includes(searchTerm.toLowerCase());
 
     if (filter === 'active') {
       return matchesSearch && !task.completed;
@@ -81,11 +125,99 @@ function Tasks() {
           <p>Manage and organize all of your tasks.</p>
         </div>
 
-        <button className="create-task-button">
+        <button
+          className="create-task-button"
+          onClick={() => {
+            setShowCreateForm(true);
+            setCreateError('');
+          }}
+        >
           <Plus size={20} />
           New Task
         </button>
       </header>
+
+      {showCreateForm && (
+        <section className="create-task-form-container">
+          <div className="create-task-form-header">
+            <h2>Create New Task</h2>
+
+            <button
+              className="close-form-button"
+              onClick={() => setShowCreateForm(false)}
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <form onSubmit={handleCreateTask} className="create-task-form">
+            <label>
+              Title
+              <input
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder="What needs to be done?"
+              />
+            </label>
+
+            <label>
+              Description
+              <textarea
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                placeholder="Add a description..."
+                rows="4"
+              />
+            </label>
+
+            <div className="form-row">
+              <label>
+                Priority
+                <select
+                  value={priority}
+                  onChange={(event) => setPriority(event.target.value)}
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+
+              <label>
+                Due Date
+                <input
+                  type="date"
+                  value={dueDate}
+                  onChange={(event) => setDueDate(event.target.value)}
+                />
+              </label>
+            </div>
+
+            {createError && (
+              <p className="create-task-error">{createError}</p>
+            )}
+
+            <div className="create-task-form-actions">
+              <button
+                type="button"
+                className="cancel-task-button"
+                onClick={() => setShowCreateForm(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                className="submit-task-button"
+                disabled={creating}
+              >
+                {creating ? 'Creating...' : 'Create Task'}
+              </button>
+            </div>
+          </form>
+        </section>
+      )}
 
       <section className="tasks-toolbar">
         <div className="search-container">
@@ -158,7 +290,7 @@ function Tasks() {
               </div>
 
               <span
-                className={`task-priority ${task.priority.toLowerCase()}`}
+                className={`task-priority ${(task.priority ?? 'medium').toLowerCase()}`}
               >
                 {task.priority}
               </span>
