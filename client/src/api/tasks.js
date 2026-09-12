@@ -17,11 +17,46 @@ export async function getTasks() {
 export async function createTask(taskData) {
   const token = localStorage.getItem('token');
 
-  const response = await axios.post(`${API_URL}/tasks`, taskData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await axios.post(
+    `${API_URL}/tasks`,
+    taskData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+}
+
+export async function updateTask(taskId, taskData) {
+  const token = localStorage.getItem('token');
+
+  const response = await axios.patch(
+    `${API_URL}/tasks/${taskId}`,
+    taskData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+}
+
+export async function deleteTask(taskId) {
+  const token = localStorage.getItem('token');
+
+  const response = await axios.delete(
+    `${API_URL}/tasks/${taskId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   return response.data;
 }

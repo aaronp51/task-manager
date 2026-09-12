@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Search, Plus, CheckCircle2, X } from 'lucide-react';
-import { getTasks, createTask } from '../api/tasks';
+import { getTasks, createTask, updateTask } from '../api/tasks';
 
 import '../stylesheets/Tasks.css';
 
@@ -39,14 +39,39 @@ function Tasks() {
     loadTasks();
   }, []);
 
-  function toggleTaskCompletion(taskId) {
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
-        task.id === taskId
-          ? { ...task, completed: !task.completed }
-          : task
+  async function toggleTaskCompletion(taskId) {
+    const task = tasks.find(currentTask => currentTask.id === taskId);
+
+    if (!task) return;
+
+    const newCompletedStatus = !task.completed;
+
+    // Update UI immediately
+    setTasks(currentTasks =>
+      currentTasks.map(currentTask =>
+        currentTask.id === taskId
+          ? { ...currentTask, completed: newCompletedStatus }
+          : currentTask
       )
     );
+
+    try {
+      // Persist change to database
+      await updateTask(taskId, {
+        completed: newCompletedStatus,
+      });
+    } catch (error) {
+      console.error('Failed to update task:', error);
+
+      // Revert UI if database update failed
+      setTasks(currentTasks =>
+        currentTasks.map(currentTask =>
+          currentTask.id === taskId
+            ? { ...currentTask, completed: !newCompletedStatus }
+            : currentTask
+        )
+      );
+    }
   }
 
   async function handleCreateTask(event) {
