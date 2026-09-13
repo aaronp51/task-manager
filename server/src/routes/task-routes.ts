@@ -26,7 +26,7 @@ router.get('/:id', authenticateToken, async (req: AuthenticatedRequest, res: Res
     }
 
     const task = await prisma.task.findFirst({
-      where: { taskId, userId },
+      where: { id: taskId, userId },
     });
 
     if (!task) {
