@@ -1,0 +1,307 @@
+.settings-page {
+  width: 100%;
+  max-width: 1000px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.settings-header {
+  margin-bottom: 28px;
+}
+
+.settings-header h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px;
+}
+
+.settings-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.settings-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 26px;
+  margin-bottom: 20px;
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.settings-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  background: #f1f5f9;
+  color: #475569;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.settings-card-header h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 650;
+  color: #1e293b;
+}
+
+.settings-card-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* =========================
+   ACCOUNT INFO
+========================= */
+
+.account-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.account-info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #64748b;
+}
+
+.account-info-item div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.account-info-item span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.account-info-item strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.settings-form {
+  max-width: 600px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 11px 13px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+
+  font-size: 14px;
+  color: #1e293b;
+
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-group input:focus {
+  border-color: #64748b;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12);
+}
+
+.form-group small {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.settings-primary-button {
+  border: none;
+  border-radius: 8px;
+
+  padding: 10px 16px;
+
+  background: #1e293b;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.settings-primary-button:hover {
+  background: #334155;
+}
+
+.settings-primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.settings-secondary-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+
+  padding: 10px 16px;
+
+  background: white;
+  color: #334155;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.settings-secondary-button:hover {
+  background: #f8fafc;
+}
+
+/* =========================
+   MESSAGES
+========================= */
+
+.settings-error {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #dc2626;
+}
+
+.settings-success {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #16a34a;
+}
+
+/* =========================
+   DANGER ZONE
+========================= */
+
+.danger-zone {
+  border-color: #fecaca;
+}
+
+.danger-icon {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.danger-warning {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.danger-warning strong {
+  font-size: 14px;
+  color: #991b1b;
+}
+
+.danger-warning span {
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+.delete-account-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  border: 1px solid #dc2626;
+  border-radius: 8px;
+
+  padding: 10px 16px;
+
+  background: white;
+  color: #dc2626;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.delete-account-button:hover {
+  background: #fef2f2;
+}
+
+.delete-account-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.settings-loading {
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+  .settings-card {
+    padding: 20px;
+  }
+
+  .account-info {
+    grid-template-columns: 1fr;
+  }
+}

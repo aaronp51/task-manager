@@ -5,6 +5,14 @@ import bcrypt from 'bcrypt';
 import prisma from '../config/db.js';
 import { Prisma } from '../generated/prisma/client.js';
 import validateEmailAndPassword from '../middleware/validation.js';
+import authenticateToken from '../middleware/auth.js';
+
+// 1. Extend the Express Request type to include your custom user payload
+interface AuthenticatedRequest extends Request {
+    user?: {
+        userId: number; // Change to string if your IDs are UUIDs/strings
+    };
+}
 
 const saltRounds = 10;
 const router = express.Router();
@@ -69,6 +77,217 @@ router.post('/register', validateEmailAndPassword, async (req: Request, res: Res
 
     return next(error);
   }
+});
+
+// Get the currently logged-in user's account information
+router.get('/me', authenticateToken, async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const userId = req.user?.userId;
+
+        if (userId === undefined) {
+            return res.status(401).json('Authentication required');
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                email: true,
+                createdAt: true,
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json('User not found');
+        }
+
+        return res.json({ user });
+    }
+    catch (error) {
+        return next(error);
+    }
+});
+
+
+// Change email
+router.patch('/me/email', authenticateToken, async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const userId = req.user?.userId;
+        const { newEmail, password } = req.body;
+
+        if (userId === undefined) {
+            return res.status(401).json('Authentication required');
+        }
+
+        if (!newEmail || !password) {
+            return res.status(400).json(
+                'New email and current password are required'
+            );
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            return res.status(404).json('User not found');
+        }
+
+        const correctPassword = await bcrypt.compare(
+            password,
+            user.passwordHash
+        );
+
+        if (!correctPassword) {
+            return res.status(401).json('Current password is incorrect');
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                email: newEmail,
+            },
+            select: {
+                id: true,
+                email: true,
+                createdAt: true,
+            },
+        });
+
+        return res.json({
+            user: updatedUser,
+            message: 'Email updated successfully',
+        });
+    }
+    catch (error) {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === 'P2002'
+        ) {
+            return res.status(409).json('Email is already registered');
+        }
+
+        return next(error);
+    }
+});
+
+
+// Change password
+router.patch('/me/password', authenticateToken, async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const userId = req.user?.userId;
+        const { currentPassword, newPassword } = req.body;
+
+        if (userId === undefined) {
+            return res.status(401).json('Authentication required');
+        }
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json(
+                'Current password and new password are required'
+            );
+        }
+
+        if (newPassword.length < 8) {
+            return res.status(400).json(
+                'New password must be at least 8 characters'
+            );
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            return res.status(404).json('User not found');
+        }
+
+        const correctPassword = await bcrypt.compare(
+            currentPassword,
+            user.passwordHash
+        );
+
+        if (!correctPassword) {
+            return res.status(401).json('Current password is incorrect');
+        }
+
+        const passwordHash = await bcrypt.hash(
+            newPassword,
+            saltRounds
+        );
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                passwordHash,
+            },
+        });
+
+        return res.json({
+            message: 'Password updated successfully',
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
+});
+
+
+// Delete account
+router.delete('/me', authenticateToken, async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const userId = req.user?.userId;
+        const { password } = req.body;
+
+        if (userId === undefined) {
+            return res.status(401).json('Authentication required');
+        }
+
+        if (!password) {
+            return res.status(400).json(
+                'Current password is required'
+            );
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            return res.status(404).json('User not found');
+        }
+
+        const correctPassword = await bcrypt.compare(
+            password,
+            user.passwordHash
+        );
+
+        if (!correctPassword) {
+            return res.status(401).json('Current password is incorrect');
+        }
+
+        /*
+         * Delete the user's tasks first.
+         *
+         * This avoids depending on a database-level cascade rule.
+         */
+        await prisma.$transaction([
+            prisma.task.deleteMany({
+                where: { userId },
+            }),
+
+            prisma.user.delete({
+                where: { id: userId },
+            }),
+        ]);
+
+        return res.json({
+            message: 'Account deleted successfully',
+        });
+    }
+    catch (error) {
+        return next(error);
+    }
 });
 
 export default router;

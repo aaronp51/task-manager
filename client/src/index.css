@@ -63,9 +63,8 @@ a {
 
 .main-content {
   flex: 1;
-
   min-width: 0;
   padding: 40px;
-
-  background-color: #f8fafc;
+  height: 100vh;
+  overflow-y: auto;
 }
