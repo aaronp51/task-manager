@@ -19,7 +19,7 @@ function Sidebar() {
         </div>
 
         <div>
-          <h1>TaskFlow</h1>
+          <h1>TaskManager</h1>
           <p>Manage your day</p>
         </div>
       </div>
@@ -30,7 +30,7 @@ function Sidebar() {
           <p className="nav-section-title">WORKSPACE</p>
 
           <NavLink
-            to="/"
+            to="/dashboard"
             end
             className={({ isActive }) =>
               isActive ? 'nav-link active' : 'nav-link'
@@ -75,25 +75,6 @@ function Sidebar() {
           </NavLink>
         </div>
       </nav>
-
-      {/* Bottom section */}
-      <div className="sidebar-bottom">
-        <button className="new-task-button">
-          <Plus size={20} />
-          <span>New Task</span>
-        </button>
-
-        <div className="sidebar-user">
-          <div className="user-avatar">
-            <User size={20} />
-          </div>
-
-          <div className="user-info">
-            <p className="user-name">John Doe</p>
-            <p className="user-email">john@example.com</p>
-          </div>
-        </div>
-      </div>
     </aside>
   );
 }
