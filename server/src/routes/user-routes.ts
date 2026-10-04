@@ -17,15 +17,6 @@ interface AuthenticatedRequest extends Request {
 const saltRounds = 10;
 const router = express.Router();
 
-router.get('/', async (_req: Request, res: Response) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.json({ users, message: 'Get all users' });
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch users', error: String(error) });
-  }
-});
-
 // login route: request -> get data -> compare email and password -> verify credentials -> create token -> send token
 router.post('/login', validateEmailAndPassword, async (req: Request, res: Response, next: NextFunction) => {
   try {
